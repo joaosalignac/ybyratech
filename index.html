@@ -46,6 +46,18 @@
             align-items: center;
             border-radius: 9999px; 
             border: 1px solid rgba(255,255,255,0.5);
+            
+            /* Scroll Horizontal Inteligente */
+            max-width: 92vw; /* Limita a largura no celular */
+            overflow-x: auto; /* Permite rolagem lateral */
+            scrollbar-width: none; /* Esconde scrollbar Firefox */
+            -ms-overflow-style: none;  /* Esconde scrollbar IE */
+            -webkit-overflow-scrolling: touch; /* Rolagem suave no iOS */
+        }
+
+        /* Esconde scrollbar Chrome/Safari */
+        .nav-container::-webkit-scrollbar {
+            display: none;
         }
 
         .nav-item {
@@ -65,6 +77,7 @@
             font-weight: 500;
             white-space: nowrap;
             color: #6b7280; 
+            flex-shrink: 0; /* Impede que o texto quebre ou amasse */
         }
 
         .nav-item span.material-symbols-outlined {
@@ -229,16 +242,15 @@
                 <span class="font-bold tracking-tight text-base hidden sm:block text-black">Ybyrá</span>
             </button>
 
-            <div class="h-4 w-px bg-gray-300 mx-1"></div>
+            <div class="h-4 w-px bg-gray-300 mx-1 flex-shrink-0"></div>
 
-            <div class="flex items-center space-x-1">
-                <a href="#intro" class="nav-item active" data-target="intro">Intro</a>
-                <a href="#research" class="nav-item" data-target="research">Pesquisa</a>
-                <a href="#5w2h" class="nav-item hidden md:flex" data-target="5w2h">5W2H</a>
-                <a href="#normas" class="nav-item hidden md:flex" data-target="normas">Normas</a>
-                <a href="#prototipo" class="nav-item" data-target="prototipo">Protótipo</a>
-                <a href="#financeiro" class="nav-item" data-target="financeiro">Custos</a>
-            </div>
+            <!-- Itens agora são filhos diretos do container para permitir rolagem correta -->
+            <a href="#intro" class="nav-item active" data-target="intro">Intro</a>
+            <a href="#research" class="nav-item" data-target="research">Pesquisa</a>
+            <a href="#5w2h" class="nav-item hidden md:flex" data-target="5w2h">5W2H</a>
+            <a href="#normas" class="nav-item hidden md:flex" data-target="normas">Normas</a>
+            <a href="#prototipo" class="nav-item" data-target="prototipo">Protótipo</a>
+            <a href="#financeiro" class="nav-item" data-target="financeiro">Custos</a>
         </nav>
     </div>
 
@@ -703,9 +715,9 @@
 
             const navRect = navContainer.getBoundingClientRect();
             const elemRect = element.getBoundingClientRect();
-            
-            const left = elemRect.left - navRect.left;
-            const top = elemRect.top - navRect.top;
+
+            const left = element.offsetLeft;
+            const top = element.offsetTop;
             const width = elemRect.width;
             const height = elemRect.height;
 
@@ -713,6 +725,9 @@
             pill.style.height = `${height}px`;
             pill.style.transform = `translate(${left}px, ${top}px)`;
             pill.style.opacity = '1';
+
+            // Scroll Inteligente: Se o item não estiver visível, rola até ele
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 
         function handleLogoClick() {
