@@ -228,7 +228,8 @@
 </head>
 <body class="antialiased selection:bg-black selection:text-white">
 
-    <button id="btn-team-fixed" class="fixed top-6 right-6 z-50 glass-button flex items-center justify-center h-[50px] px-6 group" onclick="toggleTeamModal()" title="Nossa Equipe">
+    <!-- BOTÃO EQUIPE FLUTUANTE - Ajustado para mobile (bottom-6) e desktop (top-6) -->
+    <button id="btn-team-fixed" class="fixed bottom-6 right-6 md:top-6 md:right-6 z-50 glass-button flex items-center justify-center h-[50px] px-6 group" onclick="toggleTeamModal()" title="Nossa Equipe">
         <span class="material-symbols-outlined text-gray-600 group-hover:text-black transition-colors" style="font-size: 24px; font-weight: 300;">groups</span>
     </button>
 
@@ -243,10 +244,11 @@
 
             <div class="h-4 w-px bg-gray-300 mx-1 flex-shrink-0"></div>
 
+            <!-- Itens do menu agora visíveis em todas as telas (removido hidden md:flex) -->
             <a href="#intro" class="nav-item active" data-target="intro">Intro</a>
             <a href="#research" class="nav-item" data-target="research">Pesquisa</a>
-            <a href="#5w2h" class="nav-item hidden md:flex" data-target="5w2h">5W2H</a>
-            <a href="#normas" class="nav-item hidden md:flex" data-target="normas">Normas</a>
+            <a href="#5w2h" class="nav-item" data-target="5w2h">5W2H</a>
+            <a href="#normas" class="nav-item" data-target="normas">Normas</a>
             <a href="#prototipo" class="nav-item" data-target="prototipo">Protótipo</a>
             <a href="#financeiro" class="nav-item" data-target="financeiro">Custos</a>
         </nav>
