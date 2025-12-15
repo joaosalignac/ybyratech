@@ -483,9 +483,10 @@
                     link.setAttribute('href', 'javascript:void(0);');
                     link.setAttribute('onclick', 'return false;');
                     
+                    // CORREÇÃO: Removemos e.stopPropagation() para permitir que o clique suba para o documento
                     link.addEventListener('click', function(e) {
                         e.preventDefault();
-                        e.stopPropagation();
+                        // e.stopPropagation() removido!
                     });
                 }
             });
@@ -497,36 +498,30 @@
             const inputField = document.getElementById('ybot-input');
             const messagesArea = document.getElementById('ybot-messages');
 
-            // --- Lógica Corrigida para Abrir/Fechar ---
-
-            // Botão flutuante abre ou fecha o chat, e IMPEDE (stopPropagation) que o click passe pro document
-            trigger.addEventListener('click', (e) => {
-                e.stopPropagation(); 
+            trigger.addEventListener('click', () => {
                 container.classList.toggle('active');
                 if (container.classList.contains('active')) {
                     inputField.focus();
                 }
             });
 
-            // Botão de fechar (X)
-            closeBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Boa prática também
+            closeBtn.addEventListener('click', () => {
                 container.classList.remove('active');
             });
 
-            // Cliques DENTRO do chat não devem fechar o chat
-            container.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-
-            // Qualquer clique no Documento (fora dos elementos acima, que usaram stopPropagation)
-            // fechará o chat se ele estiver aberto.
-            document.addEventListener('click', () => {
+            // CORREÇÃO: Novo listener no documento inteiro para fechar ao clicar fora
+            document.addEventListener('click', function(event) {
+                // Se o chat estiver aberto...
                 if (container.classList.contains('active')) {
-                    container.classList.remove('active');
+                    const clickedInsideContainer = container.contains(event.target);
+                    const clickedOnTrigger = trigger.contains(event.target);
+
+                    // Se o clique NÃO foi dentro do chat E NÃO foi no botão de abrir
+                    if (!clickedInsideContainer && !clickedOnTrigger) {
+                        container.classList.remove('active');
+                    }
                 }
             });
-            // ------------------------------------------
 
             function addMessage(text, sender) {
                 const msgDiv = document.createElement('div');
