@@ -1,1007 +1,571 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Ybyrá Tech</title>
-    <link rel="icon" href="https://i.imgur.com/eUNGZNM.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instituto Federal do Amazonas - Com Ybot</title>
+    <link rel="icon" type="image/png" href="300px-Instituto_Federal_do_Amazonas.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700,800,900&display=swap"/>
+    
+    <link rel="stylesheet" href="https://portal.ifam.edu.br/static/rawline/css/rawline.5996be5b672c.css"/>
+    <link rel="stylesheet" href="https://portal.ifam.edu.br/static/node_modules/@govbr-ds/core/dist/core.min.27d4e9eae8a4.css" />
+    <link rel="stylesheet" href="https://portal.ifam.edu.br/static/css/portal.fdba2194f3f8.css" />
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { overflow-x: hidden; }
+        .br-menu.active { display: none; }
 
-        :root {
-            --bg-color: #f5f5f7;
-            --text-main: #1d1d1f;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            scroll-behavior: smooth;
-            overflow-x: hidden;
-        }
-
-        .nav-wrapper {
-            position: fixed;
-            top: 24px;
-            left: 0;
-            width: 100%;
-            z-index: 50;
-            display: flex;
-            justify-content: center;
+        a:not(#ybot-container a):not(#ybot-trigger) {
+            cursor: default !important;
             pointer-events: none; 
         }
-
-        .nav-container {
-            pointer-events: auto;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            position: relative;
-            padding: 5px; 
-            display: flex;
-            align-items: center;
-            border-radius: 9999px; 
-            border: 1px solid rgba(255,255,255,0.5);
-            
-            /* Scroll Horizontal Inteligente */
-            max-width: 92vw;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            -webkit-overflow-scrolling: touch;
+        .br-header a, .br-footer a, .main-content a {
+            pointer-events: auto !important; 
+            cursor: pointer !important; 
         }
 
-        .nav-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .nav-item {
-            position: relative;
-            z-index: 20; 
+        #ybot-trigger {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 70px;
+            height: 70px;
+            background-color: white; 
+            border: 2px solid #008000;
+            border-radius: 50%;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
             cursor: pointer;
-            transition: color 0.3s ease;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 40px; 
-            padding: 0 20px;
-            border-radius: 9999px;
-            font-size: 0.875rem; 
-            font-weight: 500;
-            white-space: nowrap;
-            color: #6b7280; 
-            flex-shrink: 0;
+            overflow: hidden; 
+            padding: 15px; 
         }
 
-        .nav-item span.material-symbols-outlined {
-            font-size: 18px;
-            margin-right: 6px;
+        #ybot-trigger img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
-        .nav-item.active {
-            color: white !important;
-        }
-        
-        .nav-item.active * {
-            color: white !important;
+        #ybot-trigger:hover {
+            transform: scale(1.1) rotate(5deg);
+            border-color: #006400;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
 
-        #active-pill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #1d1d1f;
-            border-radius: 9999px;
-            z-index: 10; 
-            opacity: 0; 
-            pointer-events: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            
-            transition: 
-                width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
-                height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
-                transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .glass-button {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 9999px; 
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .glass-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255,255,255,0.5);
-        }
-
-        .fade-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .fade-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .modal-overlay {
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        .modal-overlay.hidden-modal {
+        #ybot-container {
+            position: fixed;
+            bottom: 110px; 
+            right: 25px;
+            width: 360px;
+            height: 550px;
+            background: transparent;
+            z-index: 9999;
+            display: flex; 
+            flex-direction: column;
+            font-family: 'Raleway', sans-serif;
+            border: none;
             opacity: 0;
             visibility: hidden;
-            pointer-events: none;
+            transform: translateY(20px) scale(0.95);
+            pointer-events: none; 
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .modal-overlay.visible-modal {
+
+        #ybot-container.active {
             opacity: 1;
             visibility: visible;
-            pointer-events: auto;
-        }
-        
-        .modal-content {
-            transform: scale(0.95) translateY(10px);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
-        }
-        .visible-modal .modal-content {
-            transform: scale(1) translateY(0);
+            transform: translateY(0) scale(1);
+            pointer-events: all;
         }
 
-        .view-transition {
-            transition: opacity 0.3s ease, transform 0.3s ease;
+        #ybot-header {
+            background-color: #008000;
+            color: white;
+            padding: 10px 20px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            height: 70px; 
         }
-        .hidden-view {
-            opacity: 0;
-            pointer-events: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform: translateX(20px);
+
+        #ybot-header .title-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: auto;
+            background-color: white; 
+            padding: 5px 15px;       
+            border-radius: 30px;     
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
-        .active-view {
-            opacity: 1;
-            pointer-events: auto;
+
+        #ybot-header .logo-icon {
+            height: 35px; 
+            width: auto;
+        }
+
+        #ybot-header .logo-text {
+            height: 25px; 
+            width: auto;
+            margin-top: 2px; 
+        }
+
+        #ybot-header .close-btn {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            padding: 0;
+            margin-left: 10px;
+        }
+        
+        #ybot-header .close-btn:hover {
+            background: rgba(255,255,255,1);
+            color: #008000;
+            border-color: white;
+            transform: rotate(90deg);
+        }
+
+        #ybot-body {
+            background: white;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-radius: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            overflow: hidden; 
+        }
+
+        #ybot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #e6e6e6; 
+            background-image: radial-gradient(#c2c2c2 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
             position: relative;
-            transform: translateX(0);
         }
 
-        @keyframes growBar {
-            from { width: 0; }
-            to { width: var(--target-width); }
-        }
-        .bar-fill.animate {
-            animation: growBar 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        .card-hover {
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        .message.bot {
+            background-color: #ffffff;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #eee;
         }
 
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden; 
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
-        
-        .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
+        .message.user {
+            background-color: #008000;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
         }
 
-        .matrix-fade {
-            animation: matrixFadeIn 0.5s ease-out forwards;
+        #ybot-input-area {
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            background: white;
+            align-items: center;
+            gap: 10px;
         }
-        @keyframes matrixFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        #ybot-input {
+            flex: 1;
+            border: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+            border-radius: 25px;
+            padding: 12px 20px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        #ybot-input:focus {
+            border-color: #008000;
+            background-color: white;
+        }
+
+        #ybot-send {
+            background: #008000;
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background 0.2s;
+            box-shadow: 0 2px 5px rgba(0,128,0,0.2);
+        }
+
+        #ybot-send:hover {
+            background: #006400;
+            transform: scale(1.05);
+        }
+
+        #ybot-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        #ybot-messages::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        @media (max-width: 480px) {
+            #ybot-container {
+                width: 90%;
+                right: 5%;
+                bottom: 100px;
+                height: 70vh;
+            }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-black selection:text-white">
 
-    <!-- BOTÃO EQUIPE FLUTUANTE -->
-    <button id="btn-team-fixed" class="fixed bottom-6 right-6 md:top-6 md:right-6 z-50 glass-button flex items-center justify-center h-[50px] px-6 group" onclick="toggleTeamModal()" title="Nossa Equipe">
-        <span class="material-symbols-outlined text-gray-600 group-hover:text-black transition-colors" style="font-size: 24px; font-weight: 300;">groups</span>
+<body class="template-default">
+
+    <div class="template-base">
+        <header class="br-header mb-4" id="header" data-sticky="data-sticky">
+            <div class="container-fluid">
+                <div class="header-top">
+                    <div class="header-logo">
+                        <a href="javascript:void(0);">
+                            <img src="https://s3.sa-east-1.amazonaws.com/files.ifam.edu.br/images/500px-Instituto_Federal_do_Amazonas_transparente.png" alt="logo"/>
+                        </a>
+                    </div>
+                    <div class="header-actions">
+                        <div class="header-links dropdown">
+                            <button class="br-button circle small" type="button" aria-label="Abrir Acesso Rápido"><i class="fas fa-ellipsis-v"></i></button>
+                        </div>
+                        <span class="br-divider vertical mx-half mx-sm-1"></span>
+                        <div class="header-functions dropdown">
+                            <button class="br-button circle small" type="button"><i class="fas fa-th"></i></button>
+                        </div>
+                        <div class="header-search-trigger">
+                            <button class="br-button circle" type="button"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-bottom">
+                    <div class="header-menu">
+                        <div class="header-menu-trigger" id="header-navigation">
+                            <button class="br-button small circle" type="button" id="navigation"><i class="fas fa-bars"></i></button>
+                        </div>
+                        <div class="header-info">
+                            <div class="header-title"><a href="javascript:void(0);">Instituto Federal do Amazonas</a></div>
+                            <div class="header-subtitle">Ministério da Educação</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="d-flex flex-fill mb-5" id="main">
+            <div class="container-fluid d-flex mt-10" style="width: 90%;">
+                
+                <div class="br-menu push large col-sm-4 col-lg-3" id="main-navigation">
+                    <div class="menu-container">
+                        <div class="menu-panel">
+                            <div class="menu-header">
+                                <div class="menu-title">
+                                    <img src="https://s3.sa-east-1.amazonaws.com/files.ifam.edu.br/images/500px-Instituto_Federal_do_Amazonas_transparente.png" alt="logo"/>
+                                    <span>Ministério da Educação</span>
+                                </div>
+                                <div class="menu-close">
+                                    <button class="br-button circle" type="button"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <nav class="menu-body" role="tree">
+                                <div class="menu-folder">
+                                    <a class="menu-item" href="javascript:void(0)">
+                                        <span class="icon"><i class="fas fa-home"></i></span>
+                                        <span class="content">Estude no IFAM (Menu Exemplo)</span>
+                                    </a>
+                                    <ul>
+                                        <li><a class="menu-item" href="javascript:void(0);"><span class="content">Entenda as cotas</span></a></li>
+                                        <li><a class="menu-item" href="javascript:void(0);"><span class="content">Tipos de cursos</span></a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <nav class="br-breadcrumb">
+                                <ol class="crumb-list" role="list">
+                                    <li class="crumb home"><a class="br-button circle" href="javascript:void(0);"><i class="fas fa-home"></i></a></li>
+                                    <li class="crumb"><i class="icon fas fa-chevron-right"></i><a href="javascript:void(0);">Estude no IFAM</a></li>
+                                    <li class="crumb" data-active="active"><i class="icon fas fa-chevron-right"></i><a href="javascript:void(0);">Processo Seletivo 2026</a></li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="main-content pl-sm-3 mt-4" id="main-content">
+                        
+                        <div class="block-banner mb-2">
+                            <div class="banner-container">
+                                <div class="container-fluid px-0">
+                                    <div class="banner-image-wrapper">
+                                        <img alt="" class="img-fluid banner-image" style="width:100%" src="https://portal.ifam.edu.br/media/images/2_rR3cj23.format-jpeg.width-1920.jpg">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block-rich_text mb-2">
+                            <p class="text-left">Aqui você encontrará o caminho para todas as <b>formas e modalidades de ensino oferecidas</b>, com as informações necessárias para participar e ingressar em nossa instituição.</p>
+                        </div>
+
+                        <div class="block-header mb-2">
+                            <div class="container-fluid px-0">
+                                <div class="header-block column col-12 my-0" style="padding: 10px; border-top: 2px solid #f2b32c; background-color: #f8f8f8;">
+                                    <h4 style="margin:0;">Seu futuro começa aqui. Acesso às páginas de cada edital a seguir:</h4>       
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block-divider mb-2"><span class="br-divider sm my-3" style="border-color: green;"></span></div>
+
+                        <div class="block-grid_row mb-2">
+                            <div class="row my-1 g-2">
+                                <div class="col-12 col-md-6">
+                                    <div class="my-1">
+                                        <div class="linked-image-wrapper">
+                                            <a href="javascript:void(0);" class="d-block">
+                                                <img alt="Botão Novas Chamadas" class="img-fluid rounded w-100" src="https://portal.ifam.edu.br/media/images/botao_-_novas_chamadas.format-jpeg.jpg">
+                                            </a>
+                                        </div>
+                                        <div class="py-2 w-100">
+                                            <div class="br-magic-button" style="width: 100%;">
+                                                <a class="br-button block magic text w-100 text-center" href="javascript:void(0);">Saiba mais</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="my-1">
+                                        <div class="linked-image-wrapper">
+                                            <img alt="Logo Integrado" class="img-fluid rounded w-100" src="https://portal.ifam.edu.br/media/images/2_baY3k2v.format-jpeg.jpg">
+                                        </div>
+                                        <div class="py-2 w-100">
+                                            <div class="br-magic-button" style="width: 100%;">
+                                                <a class="br-button block magic text w-100 text-center" href="javascript:void(0);">Saiba mais</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="my-1">
+                                        <div class="linked-image-wrapper">
+                                            <img alt="Logo PSD" class="img-fluid rounded w-100" src="https://portal.ifam.edu.br/media/images/6_3Q6frLr.format-jpeg.jpg">
+                                        </div>
+                                        <div class="py-2 w-100">
+                                            <div class="br-magic-button" style="width: 100%;">
+                                                <a class="br-button block magic text w-100 text-center" href="javascript:void(0);">Saiba mais</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="my-1">
+                                        <div class="linked-image-wrapper">
+                                            <img alt="Logo Proeja" class="img-fluid rounded w-100" src="https://portal.ifam.edu.br/media/images/3_LObep8P.format-jpeg.jpg">
+                                        </div>
+                                        <div class="py-2 w-100">
+                                            <div class="br-magic-button" style="width: 100%;">
+                                                <a class="br-button block magic text w-100 text-center" href="javascript:void(0);">Saiba mais</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block-accordion mb-2 mt-4">
+                            <div class="br-accordion" id="accordion1">
+                                <div class="accordion-item">
+                                    <button class="accordion-header" type="button"><span class="accordion-icon">+</span><span class="accordion-title">Deseja concorrer para cursos técnicos?</span></button>
+                                    <div class="accordion-content">
+                                        <div class="accordion-body"><p>A seleção considerará as médias finais de disciplinas...</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    </div>
+            </div>
+        </main>
+
+        <footer class="br-footer">
+            <div class="container-lg">
+                <div class="logo">
+                    <img alt="logo-footer" src="https://portal.ifam.edu.br/media/original_images/2025.ago_br_govfederal_manual-de-uso_v1.2-4.webp" style="max-width: 180px;" />
+                </div>
+                <div class="br-list horizontal">
+                    <div class="col-2"><a class="br-item header" href="javascript:void(0)"><div class="content text-bold">Instituição</div></a></div>
+                    <div class="col-2"><a class="br-item header" href="javascript:void(0)"><div class="content text-bold">Serviços</div></a></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <button id="ybot-trigger" title="Falar com o Ybot">
+        <img src="dfdf.png" alt="Ybot Logo" />
     </button>
 
-    <div class="nav-wrapper px-4">
-        <nav class="nav-container">
-            <div id="active-pill" style="width: 70px; height: 40px; transform: translate(0, 0); opacity: 0;"></div>
-            
-            <button id="btn-project" class="nav-item group !px-4 hover:text-black" onclick="toggleProjectModal()">
-                <span class="material-symbols-outlined group-hover:rotate-12 transition-transform !mr-2">forest</span>
-                <span class="font-bold tracking-tight text-base hidden sm:block text-black">Ybyrá</span>
-            </button>
+    <div id="ybot-container">
+        <div id="ybot-header">
+            <div class="title-area">
+                <img src="dfdf.png" alt="Logo" class="logo-icon">
+                <img src="Letra.png" alt="YBOT" class="logo-text">
+            </div>
+            <button class="close-btn" id="ybot-close" title="Fechar Chat"><i class="fas fa-times"></i></button>
+        </div>
 
-            <div class="h-4 w-px bg-gray-300 mx-1 flex-shrink-0"></div>
-
-            <a href="#intro" class="nav-item active" data-target="intro">Intro</a>
-            <a href="#research" class="nav-item" data-target="research">Pesquisa</a>
-            <a href="#5w2h" class="nav-item" data-target="5w2h">5W2H</a>
-            <a href="#normas" class="nav-item" data-target="normas">Normas</a>
-            <a href="#prototipo" class="nav-item" data-target="prototipo">Protótipo</a>
-            <a href="#financeiro" class="nav-item" data-target="financeiro">Custos</a>
-        </nav>
-    </div>
-
-    <!-- PROJECT MODAL -->
-    <div id="project-modal" class="modal-overlay hidden-modal fixed inset-0 z-[60] flex items-center justify-center px-4 py-4">
-        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="toggleProjectModal()"></div>
-        <div class="modal-content bg-white w-full max-w-6xl rounded-[40px] relative z-10 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-            
-            <button onclick="toggleProjectModal()" class="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors z-30">
-                <span class="material-symbols-outlined text-gray-600">close</span>
-            </button>
-            
-            <div class="overflow-y-auto p-6 md:p-8 flex flex-col md:flex-row gap-8">
-                <div class="w-full md:w-1/3 h-48 md:h-auto flex-shrink-0 rounded-3xl overflow-hidden relative flex items-center justify-center bg-gray-50 p-8">
-                    <div class="flex flex-col items-center text-black">
-                        <span class="material-symbols-outlined text-8xl mb-4">forest</span>
-                        <span class="font-bold tracking-tight text-4xl">Ybyrá</span>
-                    </div>
-                </div>
-
-                <div class="w-full md:w-2/3 flex flex-col justify-center pb-4">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold w-fit mb-3">
-                        <span class="material-symbols-outlined text-sm">eco</span>
-                        Inovação & Propósito
-                    </div>
-                    <h3 class="text-2xl md:text-3xl font-bold mb-3 text-gray-900">Sobre a Ybyrá Tech</h3>
-                    
-                    <div class="text-gray-600 leading-relaxed text-sm md:text-base text-justify space-y-3">
-                        <p>
-                            A Ybyrá Tech nasce com a missão de transformar desafios em soluções inteligentes. Inspirados no significado de Ybyrá — “árvore”, símbolo de conexão, sabedoria e crescimento — unimos tecnologia e propósito para apoiar instituições no fortalecimento de seus processos digitais.
-                        </p>
-                        <p>
-                            Somos especialistas em desenvolver ferramentas que simplificam rotinas, aumentam a eficiência e melhoram a experiência dos usuários. Para o IFAM, criamos duas soluções estratégicas:
-                        </p>
-                        <p>
-                            <strong>Ybyrá Publish:</strong> Uma plataforma intuitiva para organização, gestão e divulgação de produções acadêmicas. Ela centraliza informações, otimiza processos e fortalece a visibilidade científica da instituição.
-                        </p>
-                        <p>
-                            <strong>Ybot:</strong> Um assistente virtual integrado ao site do IFAM, desenvolvido para agilizar o atendimento aos alunos. Ele responde dúvidas sobre processos seletivos, orientações acadêmicas e serviços institucionais de forma prática e automática.
-                        </p>
-                        <p>
-                            Combinamos inovação, acessibilidade e design centrado no usuário para entregar soluções que realmente fazem diferença. Ybyrá Tech — tecnologia que cria raízes e impulsiona o futuro.
-                        </p>
-                    </div>
-                </div>
+        <div id="ybot-body">
+            <div id="ybot-messages">
+                <div class="message bot">Olá! Eu sou o Ybot. Estou aqui para ajudar você com o processo seletivo do IFAM. Pergunte sobre "cursos", "editais" ou "inscrição".</div>
+            </div>
+            <div id="ybot-input-area">
+                <input type="text" id="ybot-input" placeholder="Digite sua dúvida..." />
+                <button id="ybot-send"><i class="fas fa-arrow-right"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- TEAM MODAL -->
-    <div id="team-modal" class="modal-overlay hidden-modal fixed inset-0 z-[60] flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="toggleTeamModal()"></div>
-        
-        <div id="team-modal-content" class="modal-content bg-white w-full max-w-sm rounded-[40px] p-8 relative z-10 shadow-2xl overflow-hidden flex flex-col h-auto transition-all duration-500 ease-in-out">
-            
-            <button onclick="toggleTeamModal()" class="absolute top-6 right-6 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors z-30">
-                <span class="material-symbols-outlined text-gray-600">close</span>
-            </button>
-
-            <div id="team-list-view" class="w-full flex flex-col justify-center transition-opacity duration-300 opacity-100">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl font-bold mb-1">Equipe</h3>
-                    <p class="text-gray-500 text-xs">Quem faz acontecer.</p>
-                </div>
-                <div class="grid grid-cols-2 gap-6 max-w-sm mx-auto">
-                    <div class="group text-center cursor-pointer" onclick="openMemberDetail('joao')">
-                        <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-transparent group-hover:border-black transition-all shadow-md">
-                            <img src="https://i.imgur.com/r64qfIW.jpeg" alt="João Salignac" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <h4 class="font-bold text-gray-900 text-sm">João Salignac</h4>
-                    </div>
-                    <div class="group text-center cursor-pointer" onclick="openMemberDetail('julio')">
-                        <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-transparent group-hover:border-black transition-all shadow-md">
-                            <img src="https://i.imgur.com/nNxQuFZ.jpeg" alt="Julio Cesar" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        <h4 class="font-bold text-gray-900 text-sm">Julio Cesar</h4>
-                    </div>
-                </div>
-            </div>
-
-            <div id="team-detail-view" class="w-full flex flex-col justify-center items-center hidden opacity-0 transition-opacity duration-300">
-                <button onclick="backToTeamList()" class="absolute top-6 left-6 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors z-30" title="Voltar">
-                    <span class="material-symbols-outlined text-gray-600">arrow_back</span>
-                </button>
-
-                <div class="flex flex-col items-center justify-center w-full mt-2">
-                    <div class="w-32 h-32 rounded-[32px] overflow-hidden shadow-xl mb-4">
-                        <img id="detail-img" src="" alt="" class="w-full h-full object-cover">
-                    </div>
-                    
-                    <h3 id="detail-name" class="text-2xl font-bold text-gray-900 mb-1 text-center">Nome Membro</h3>
-                    <p id="detail-role" class="text-gray-500 uppercase tracking-widest text-xs mb-5">Cargo</p>
-                    
-                    <a id="detail-email" href="" class="mb-4 flex items-center gap-3 px-5 py-3 rounded-full bg-gray-50 border border-gray-200 hover:bg-white hover:shadow-md transition-all text-gray-700 w-full justify-center max-w-xs">
-                        <span class="material-symbols-outlined text-gray-500 text-[18px]">mail</span>
-                        <span class="text-xs font-medium truncate">email@exemplo.com</span>
-                    </a>
-
-                    <div class="flex gap-3 w-full justify-center max-w-xs">
-                        <a id="detail-linkedin" href="#" target="_blank" class="flex-1 py-3 bg-[#0077b5] text-white rounded-full flex items-center justify-center gap-2 hover:bg-[#005582] transition-colors shadow-md hover:scale-105 transform">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                            <span class="font-bold text-xs">LinkedIn</span>
-                        </a>
-                        <a id="detail-github" href="#" target="_blank" class="flex-1 py-3 bg-[#333] text-white rounded-full flex items-center justify-center gap-2 hover:bg-black transition-colors shadow-md hover:scale-105 transform">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.419-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-                            <span class="font-bold text-xs">GitHub</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <section id="intro" class="min-h-screen pt-32 pb-20 px-6 flex flex-col items-center justify-center relative overflow-hidden bg-white rounded-b-[60px] shadow-sm z-10">
-        <div class="max-w-5xl mx-auto text-center z-10">
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-xs font-semibold text-gray-600 mb-8 fade-up tracking-widest uppercase visible">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                Documentação Oficial v1.0
-            </div>
-            <h1 class="text-6xl md:text-8xl font-bold tracking-tighter mb-8 fade-up text-black leading-[0.9] visible">
-                Ybyrá <span class="text-gray-400">Tech.</span>
-            </h1>
-            <p class="text-lg text-gray-500 max-w-4xl mx-auto mb-12 fade-up leading-relaxed visible text-justify">
-                A Ybyrá Tech é uma iniciativa desenvolvida para modernizar processos internos do IFAM por meio de soluções tecnológicas simples, eficientes e sustentáveis. Unindo inovação, design e inteligência digital, criamos ferramentas que facilitam a comunicação institucional, automatizam fluxos de trabalho e melhoram a experiência de estudantes, servidores e setores administrativos. Nossos projetos refletem necessidades reais da instituição e reforçam o compromisso com o meio ambiente, eficiência, transparência e transformação digital.
-            </p>
-            <div class="w-full max-w-4xl mx-auto h-[400px] md:h-[500px] rounded-[40px] overflow-hidden shadow-2xl fade-up relative group visible">
-                <img src="https://i.imgur.com/AoqXbkO.jpeg" alt="Conceito Ybyrá" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-10">
-                    <div class="text-left text-white">
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="research" class="py-32 px-6 max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row gap-16 items-center">
-            <div class="w-full lg:w-1/2 fade-up">
-                <div class="h-12 px-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-6 w-fit">
-                    <span class="material-symbols-outlined">query_stats</span>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Pesquisa &amp; Validação.</h2>
-                <p class="text-gray-500 text-lg mb-8 leading-relaxed text-justify">
-                    Para garantir que as soluções desenvolvidas pela Ybyrá Tech atendessem às necessidades reais do IFAM, foi realizada uma visita técnica à Diretoria de Administração e Planejamento (DAP). Durante a pesquisa, foram observados os fluxos institucionais, os processos de comunicação e as principais dificuldades enfrentadas pelos setores responsáveis. A equipe analisou práticas administrativas, mapeou stakeholders e identificou desafios como comunicação fragmentada, sobrecarga no atendimento ao público e ausência de padronização em processos internos.
-                </p>
-                <p class="text-gray-500 text-lg mb-8 leading-relaxed text-justify">
-                    Essas observações permitiram validar diretamente os dois projetos propostos: o sistema de gerenciamento de publicações e o chatbot institucional. Ambos respondem às demandas detectadas, oferecendo digitalização, automação, rastreabilidade e melhoria no acesso à informação. A validação confirmou que as soluções possuem relevância institucional, viabilidade técnica e potencial de impacto positivo no cotidiano administrativo e comunicacional do campus.
-                </p>
-                
-                <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                    <a href="https://drive.google.com/file/d/1dOr-65FwFsH8cJHG6pYavzREdAX32uub/view?usp=sharing" target="_blank" class="glass-button px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">description</span>
-                        Relatório Técnico de Visita
-                    </a>
-                    <a href="https://drive.google.com/file/d/1T4ZKoVYiEtGOj3wYsCqdimgr7Ou1u6aU/view?usp=sharing" target="_blank" class="glass-button px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">calendar_month</span>
-                        Cronograma de Manutenção
-                    </a>
-                </div>
-
-                <div class="bg-white p-8 rounded-[32px] shadow-lg border border-gray-100 card-hover">
-                    <h4 class="font-bold mb-6 flex items-center justify-between">
-                        <span>Insights da Pesquisa</span>
-                        <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">OUT 2025</span>
-                    </h4>
-                    <div class="space-y-8">
-                        <div class="mb-4">
-                            <div class="flex justify-between items-end mb-1">
-                                <span class="text-sm font-bold text-gray-900">Necessidade de Padronização na Comunicação</span>
-                                <span class="text-2xl font-bold text-black">83%</span>
-                            </div>
-                            <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden mb-2">
-                                <div class="bg-black h-full rounded-full bar-fill" style="width: 0; --target-width: 83%"></div>
-                            </div>
-                            <p class="text-xs text-gray-500 text-justify leading-relaxed">
-                                Setor relatou dificuldade em manter um fluxo organizado e consistente de publicações e informações institucionais.
-                            </p>
-                        </div>
-                        <div class="mb-2">
-                            <div class="flex justify-between items-end mb-1">
-                                <span class="text-sm font-bold text-gray-900">Demanda por Atendimento Automatizado</span>
-                                <span class="text-2xl font-bold text-black">76%</span>
-                            </div>
-                            <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden mb-2">
-                                <div class="bg-gray-400 h-full rounded-full bar-fill" style="width: 0; --target-width: 76%"></div>
-                            </div>
-                            <p class="text-xs text-gray-500 text-justify leading-relaxed">
-                                Servidores apontaram sobrecarga no atendimento e reconheceram que um chatbot reduziria retrabalho e dúvidas repetitivas.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="w-full lg:w-1/2 fade-up relative">
-                <div class="relative rounded-[40px] overflow-hidden shadow-2xl aspect-[3/4] group">
-                    <img src="https://i.imgur.com/cqpJAa4.jpeg" alt="Equipe em Pesquisa" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="5w2h" class="py-32 bg-black text-white rounded-[60px] mx-4 md:mx-10 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="text-center mb-12 fade-up flex flex-col items-center">
-                <span class="text-blue-400 font-bold tracking-widest text-sm uppercase mb-2">Ferramenta de Gestão da Qualidade</span>
-                <h2 class="text-4xl md:text-6xl font-bold mt-2 mb-6">Matriz 5W2H.</h2>
-                
-                <div class="flex items-center gap-4">
-                    <button onclick="switch5W2HProject('prev')" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
-                        <span class="material-symbols-outlined text-white">chevron_left</span>
-                    </button>
-                    <div id="project-pill" class="px-6 py-2 rounded-full border border-white/30 bg-white/5 backdrop-blur-md text-white font-mono text-sm tracking-wide uppercase">
-                        Ybyrá Publish
-                    </div>
-                    <button onclick="switch5W2HProject('next')" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
-                        <span class="material-symbols-outlined text-white">chevron_right</span>
-                    </button>
-                </div>
-            </div>
-
-            <div id="5w2h-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 matrix-fade">
-            </div>
-        </div>
-    </section>
-
-    <section id="normas" class="py-32 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-16 fade-up flex flex-col items-center">
-            <span class="inline-block glass-panel px-10 py-4 rounded-full mb-8">
-                <h2 class="text-4xl font-bold text-black">ISOS e ODS</h2>
-            </span>
-            
-            <a href="https://drive.google.com/file/d/1b3COLYYFQzjRfGqxdj7T9D5Gx-RMXcQI/view?usp=sharing" target="_blank" class="glass-button flex items-center gap-2 px-6 py-3 bg-white text-gray-800 hover:text-black font-medium shadow-md">
-                <span class="material-symbols-outlined">slideshow</span>
-                <span>Ver Apresentação</span>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div class="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 fade-up h-auto min-h-[300px]">
-                <div class="flex items-center gap-4 mb-8">
-                    <span class="material-symbols-outlined text-4xl text-gray-900">verified_user</span>
-                    <h3 class="text-2xl font-bold">Normas ISO</h3>
-                </div>
-                
-                <div class="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
-                    <div class="flip-card cursor-pointer w-full h-48 md:h-full flex-1 perspective-1000 group" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner relative w-full h-full text-center transition-transform duration-500 transform-style-3d">
-                            <div class="flip-card-front absolute w-full h-full backface-hidden flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-4 border border-gray-200">
-                                <span class="material-symbols-outlined text-4xl text-black mb-2">eco</span>
-                                <h4 class="font-bold text-xl">ISO 14001</h4>
-                                <span class="text-xs text-gray-500">Gestão Ambiental</span>
-                            </div>
-                            <div class="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 bg-emerald-600 text-white rounded-2xl p-4 flex items-center justify-center border border-emerald-700">
-                                <p class="text-sm text-justify">Controle rigoroso do ciclo de vida do produto.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flip-card cursor-pointer w-full h-48 md:h-full flex-1 perspective-1000 group" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner relative w-full h-full text-center transition-transform duration-500 transform-style-3d">
-                            <div class="flip-card-front absolute w-full h-full backface-hidden flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-4 border border-gray-200">
-                                <span class="material-symbols-outlined text-4xl text-black mb-2">check_circle</span>
-                                <h4 class="font-bold text-xl">ISO 9001</h4>
-                                <span class="text-xs text-gray-500">Qualidade</span>
-                            </div>
-                            <div class="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 bg-blue-600 text-white rounded-2xl p-4 flex items-center justify-center border border-blue-700">
-                                <p class="text-sm text-justify">Processos padronizados para garantir durabilidade.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 fade-up h-auto min-h-[300px]">
-                <div class="flex items-center gap-4 mb-8">
-                    <span class="material-symbols-outlined text-4xl text-black">public</span>
-                    <h3 class="text-2xl font-bold">Agenda 2030 (ODS)</h3>
-                </div>
-                <div class="flex flex-col md:flex-row gap-4 h-auto md:h-[200px]">
-                    <div class="flip-card cursor-pointer w-full h-48 md:h-full flex-1 perspective-1000 group" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner relative w-full h-full text-center transition-transform duration-500 transform-style-3d">
-                            <div class="flip-card-front absolute w-full h-full backface-hidden flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-4 border border-gray-200">
-                                <span class="material-symbols-outlined text-5xl text-black mb-3">school</span>
-                                <div class="text-center">
-                                    <span class="block text-sm font-bold text-gray-900">ODS 4</span>
-                                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">Educação</span>
-                                </div>
-                            </div>
-                            <div class="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 bg-red-500 text-white rounded-2xl p-4 flex items-center justify-center border border-red-600">
-                                <p class="text-xs font-medium leading-tight text-justify">Garantir educação inclusiva e equitativa.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flip-card cursor-pointer w-full h-48 md:h-full flex-1 perspective-1000 group" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner relative w-full h-full text-center transition-transform duration-500 transform-style-3d">
-                            <div class="flip-card-front absolute w-full h-full backface-hidden flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-4 border border-gray-200">
-                                <span class="material-symbols-outlined text-5xl text-black mb-3">factory</span>
-                                <div class="text-center">
-                                    <span class="block text-sm font-bold text-gray-900">ODS 9</span>
-                                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">Indústria</span>
-                                </div>
-                            </div>
-                            <div class="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 bg-orange-500 text-white rounded-2xl p-4 flex items-center justify-center border border-orange-600">
-                                <p class="text-xs font-medium leading-tight text-justify">Infraestrutura resiliente e inovação.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flip-card cursor-pointer w-full h-48 md:h-full flex-1 perspective-1000 group" onclick="this.classList.toggle('flipped')">
-                        <div class="flip-card-inner relative w-full h-full text-center transition-transform duration-500 transform-style-3d">
-                            <div class="flip-card-front absolute w-full h-full backface-hidden flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-4 border border-gray-200">
-                                <span class="material-symbols-outlined text-5xl text-black mb-3">handshake</span>
-                                <div class="text-center">
-                                    <span class="block text-sm font-bold text-gray-900">ODS 17</span>
-                                    <span class="text-[10px] text-gray-500 uppercase tracking-wide">Parcerias</span>
-                                </div>
-                            </div>
-                            <div class="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 bg-blue-700 text-white rounded-2xl p-4 flex items-center justify-center border border-blue-800">
-                                <p class="text-xs font-medium leading-tight text-justify">Parcerias globais para o desenvolvimento.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="prototipo" class="py-32 bg-gray-900 text-white px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row gap-12 items-center mb-16">
-                <div class="flex-1 fade-up">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-6">Design System &amp;<br>Prototipagem.</h2>
-                    <p class="text-gray-400 text-lg mb-8 text-justify">
-                        Desenvolvemos duas aplicações estratégicas: o <strong>Ybyrá Publish</strong>, uma plataforma intuitiva para a gestão de publicações acadêmicas do IFAM, e o <strong>Ybot</strong>, um assistente virtual integrado ao site institucional, projetado para otimizar o atendimento aos alunos, esclarecendo dúvidas sobre processos seletivos e informações acadêmicas.
-                    </p>
-                    <div class="flex gap-3">
-                        <a href="https://react-exkcmdju.stackblitz.io/" target="_blank" class="px-4 py-2 bg-white/10 rounded-full text-sm font-mono border border-white/10 hover:bg-white/20 transition-colors">Ybyrá Publish</a>
-                        <a href="https://joaosalignac.github.io/ybot/" target="_blank" class="px-4 py-2 bg-white/10 rounded-full text-sm font-mono border border-white/10 hover:bg-white/20 transition-colors">Ybot</a>
-                    </div>
-                </div>
-                <div class="flex-1 w-full fade-up">
-                    <div class="relative rounded-2xl overflow-hidden border border-white/20 shadow-2xl group">
-                        <div class="absolute top-0 w-full h-8 bg-black/50 flex items-center px-4 gap-2">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        </div>
-                        <img src="https://i.imgur.com/R0LqvIj.png" alt="Prototipo UI - Ybyrá Publish e Ybot" class="w-full mt-8 group-hover:scale-105 transition-transform duration-700">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="financeiro" class="py-32 px-6 max-w-5xl mx-auto">
-        <div class="text-center mb-16 fade-up flex flex-col items-center">
-            <span class="inline-block glass-panel px-10 py-4 rounded-full mb-8">
-                <h2 class="text-4xl font-bold text-black">Investimento & Custos</h2>
-            </span>
-            
-            <a href="https://drive.google.com/file/d/1kYfDCrl-4GCydTLdObBrFdhLEXqEOiAF/view?usp=drive_link" target="_blank" class="glass-button flex items-center gap-2 px-6 py-3 bg-white text-gray-800 hover:text-black font-medium shadow-md">
-                <span class="material-symbols-outlined">slideshow</span>
-                <span>Ver Apresentação</span>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div class="bg-black text-white p-10 rounded-[40px] flex flex-col justify-between fade-up card-hover">
-                <div>
-                    <span class="text-gray-400 text-sm uppercase tracking-wider">Investimento Inicial</span>
-                    <div class="text-6xl font-bold mt-2">R$ 25.700</div>
-                    <p class="text-gray-400 mt-4 text-sm leading-relaxed text-justify">
-                        A Ybyrá Tech teve investimento inicial de R$ 25.700, com operação mensal de R$ 1.050 e manutenção anual de R$ 6.000. Com economia de R$ 1.800/mês, o projeto se paga em cerca de 14 meses e apresenta ROI positivo em dois anos.
-                    </p>
-                </div>
-                <div class="mt-12 flex gap-4">
-                    <div class="flex-1 bg-white/10 rounded-2xl p-4">
-                        <div class="text-2xl font-bold text-green-400">~14 meses</div>
-                        <div class="text-xs text-gray-400">Break-even</div>
-                    </div>
-                    <div class="flex-1 bg-white/10 rounded-2xl p-4">
-                        <div class="text-2xl font-bold text-blue-400">+68,1%</div>
-                        <div class="text-xs text-gray-400">ROI 2 Anos</div>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white border border-gray-100 p-10 rounded-[40px] shadow-lg fade-up">
-                <h3 class="font-bold text-xl mb-8">Detalhamento de Custos</h3>
-                <div class="space-y-6">
-                    <div class="group">
-                        <div class="flex justify-between text-sm mb-2 font-medium">
-                            <span>Equipe de desenvolvimento</span>
-                            <span>R$ 18.000 (70,03%)</span>
-                        </div>
-                        <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
-                            <div class="bg-blue-600 h-full rounded-full bar-fill" style="width: 0; --target-width: 70.03%"></div>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="flex justify-between text-sm mb-2 font-medium">
-                            <span>Design UX/UI</span>
-                            <span>R$ 3.500 (13,62%)</span>
-                        </div>
-                        <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
-                            <div class="bg-orange-500 h-full rounded-full bar-fill" style="width: 0; --target-width: 13.62%"></div>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="flex justify-between text-sm mb-2 font-medium">
-                            <span>Jurídico</span>
-                            <span>R$ 2.000 (7,78%)</span>
-                        </div>
-                        <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
-                            <div class="bg-gray-500 h-full rounded-full bar-fill" style="width: 0; --target-width: 7.78%"></div>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="flex justify-between text-sm mb-2 font-medium">
-                            <span>Infraestrutura inicial</span>
-                            <span>R$ 1.200 (4,67%)</span>
-                        </div>
-                        <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
-                            <div class="bg-purple-500 h-full rounded-full bar-fill" style="width: 0; --target-width: 4.67%"></div>
-                        </div>
-                    </div>
-                    <div class="group">
-                        <div class="flex justify-between text-sm mb-2 font-medium">
-                            <span>Testes e validação</span>
-                            <span>R$ 1.000 (3,89%)</span>
-                        </div>
-                        <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden">
-                            <div class="bg-yellow-500 h-full rounded-full bar-fill" style="width: 0; --target-width: 3.89%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-white border-t border-gray-200 py-12 text-center">
-        <div class="inline-block glass-panel px-10 py-4 rounded-full"> 
-            <div class="flex justify-center items-center gap-2 mb-2 opacity-50">
-                <span class="material-symbols-outlined">forest</span>
-                <span class="font-bold">Ybyrá Tech</span>
-            </div>
-            <p class="text-sm text-gray-500">Desenvolvido para fins acadêmicos - 2025</p>
-        </div>
-    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://portal.ifam.edu.br/static/node_modules/@govbr-ds/core/dist/core.min.90623af2b182.js"></script>
+    <script type="text/javascript" src="https://portal.ifam.edu.br/static/js/sidebar.9f246a40421d.js"></script>
 
     <script>
-        const navContainer = document.querySelector('.nav-container');
-        const pill = document.getElementById('active-pill');
-        const navItems = document.querySelectorAll('.nav-item');
-        const sections = document.querySelectorAll('section');
+        document.addEventListener('DOMContentLoaded', function() {
+            const allLinks = document.querySelectorAll('a');
 
-        function removeActiveClasses() {
-            navItems.forEach(item => item.classList.remove('active'));
-        }
-
-        function movePillTo(element) {
-            if (!element) return;
-            
-            removeActiveClasses();
-            element.classList.add('active');
-
-            const navRect = navContainer.getBoundingClientRect();
-            const elemRect = element.getBoundingClientRect();
-
-            const left = element.offsetLeft;
-            const top = element.offsetTop;
-            const width = elemRect.width;
-            const height = elemRect.height;
-
-            pill.style.width = `${width}px`;
-            pill.style.height = `${height}px`;
-            pill.style.transform = `translate(${left}px, ${top}px)`;
-            pill.style.opacity = '1';
-
-            element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-
-        function handleLogoClick() {
-            const introLink = document.querySelector(`.nav-item[data-target="intro"]`);
-            if(introLink) movePillTo(introLink);
-        }
-
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                movePillTo(e.currentTarget);
-            });
-        });
-
-        const observerOptionsSpy = {
-            root: null,
-            rootMargin: '-50% 0px -50% 0px',
-            threshold: 0
-        };
-
-        const scrollSpy = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    const link = document.querySelector(`.nav-item[data-target="${id}"]`);
-                    const teamModal = document.getElementById('team-modal');
-                    const projectModal = document.getElementById('project-modal');
+            allLinks.forEach(link => {
+                if (!link.closest('#ybot-container') && !link.closest('#ybot-trigger')) {
                     
-                    if (link && teamModal.classList.contains('hidden-modal') && projectModal.classList.contains('hidden-modal')) {
-                        movePillTo(link);
+                    link.setAttribute('href', 'javascript:void(0);');
+                    link.setAttribute('onclick', 'return false;');
+                    
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                }
+            });
+
+            const trigger = document.getElementById('ybot-trigger');
+            const container = document.getElementById('ybot-container');
+            const closeBtn = document.getElementById('ybot-close');
+            const sendBtn = document.getElementById('ybot-send');
+            const inputField = document.getElementById('ybot-input');
+            const messagesArea = document.getElementById('ybot-messages');
+
+            trigger.addEventListener('click', () => {
+                container.classList.toggle('active');
+                if (container.classList.contains('active')) {
+                    inputField.focus();
+                }
+            });
+
+            closeBtn.addEventListener('click', () => {
+                container.classList.remove('active');
+            });
+
+            // Fecha o chat ao clicar fora
+            document.addEventListener('click', function(event) {
+                // Se o chat estiver aberto (tem a classe .active)
+                if (container.classList.contains('active')) {
+                    // Verifica se o clique NÃO foi dentro do container e NÃO foi no botão de abrir
+                    if (!container.contains(event.target) && !trigger.contains(event.target)) {
+                        container.classList.remove('active');
                     }
                 }
             });
-        }, observerOptionsSpy);
 
-        sections.forEach(section => scrollSpy.observe(section));
+            function addMessage(text, sender) {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('message', sender);
+                msgDiv.innerHTML = text;
+                messagesArea.appendChild(msgDiv);
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
 
-        window.addEventListener('load', () => {
-            const firstItem = document.querySelector('.nav-item[data-target="intro"]');
-            if(firstItem) movePillTo(firstItem);
-            
-            render5W2H();
-        });
-        
-        window.addEventListener('resize', () => {
-            const activeItem = document.querySelector('.nav-item.active');
-            if (activeItem) movePillTo(activeItem);
-        });
+            function getBotResponse(input) {
+                input = input.toLowerCase();
 
-        const animateObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    const bars = entry.target.querySelectorAll('.bar-fill');
-                    bars.forEach(bar => bar.classList.add('animate'));
+                if (input.includes('oi') || input.includes('olá') || input.includes('ola')) {
+                    return "Olá! Tudo bem? Como posso ajudar com o IFAM hoje?";
+                } else if (input.includes('curso')) {
+                    return "O IFAM oferece cursos Técnicos (Integrado e Subsequente) e Superiores. Você quer saber sobre quais?";
+                } else if (input.includes('integrado')) {
+                    return "O Ensino Médio Integrado é para quem já terminou o fundamental (9º ano). É o ensino médio junto com o técnico.";
+                } else if (input.includes('subsequente')) {
+                    return "O curso Subsequente é para quem JÁ terminou o ensino médio e quer apenas a formação técnica.";
+                } else if (input.includes('edital') || input.includes('processo')) {
+                    return "O Processo Seletivo 2026 está aberto! Você pode ver os editais na página principal clicando em 'Saiba mais' nos banners.";
+                } else if (input.includes('inscricao') || input.includes('inscrição')) {
+                    return "As inscrições geralmente são feitas pelo site da fundação ou pelo portal do candidato. Verifique o edital específico do seu curso.";
+                } else if (input.includes('obrigado') || input.includes('valeu')) {
+                    return "Por nada! Boa sorte nos estudos! 💚";
+                } else {
+                    return "Desculpe, ainda estou aprendendo. Tente perguntar sobre 'cursos', 'editais', 'integrado' ou 'inscrição'.";
                 }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.fade-up').forEach(el => animateObserver.observe(el));
-
-        function toggleTeamModal() {
-            const modal = document.getElementById('team-modal');
-            const projectModal = document.getElementById('project-modal');
-            
-            if (projectModal.classList.contains('visible-modal')) {
-                projectModal.classList.remove('visible-modal');
-                projectModal.classList.add('hidden-modal');
             }
 
-            if (modal.classList.contains('hidden-modal')) {
-                modal.classList.remove('hidden-modal');
-                modal.classList.add('visible-modal');
-                backToTeamList();
-            } else {
-                modal.classList.remove('visible-modal');
-                modal.classList.add('hidden-modal');
-            }
-        }
+            function handleSend() {
+                const text = inputField.value.trim();
+                if (text !== "") {
+                    addMessage(text, 'user');
+                    inputField.value = '';
 
-        function toggleProjectModal() {
-            const modal = document.getElementById('project-modal');
-            const projectBtn = document.getElementById('btn-project');
-            const teamModal = document.getElementById('team-modal');
-
-             if (teamModal.classList.contains('visible-modal')) {
-                teamModal.classList.remove('visible-modal');
-                teamModal.classList.add('hidden-modal');
-            }
-            
-            if (modal.classList.contains('hidden-modal')) {
-                modal.classList.remove('hidden-modal');
-                modal.classList.add('visible-modal');
-                movePillTo(projectBtn);
-            } else {
-                modal.classList.remove('visible-modal');
-                modal.classList.add('hidden-modal');
-                returnToCurrentSection();
-            }
-        }
-
-        const teamData = {
-            'joao': {
-                name: 'João Salignac',
-                role: 'Estudante',
-                email: 'joaosalignacvictor@gmail.com',
-                linkedin: 'https://www.linkedin.com/in/joao-salignac/',
-                github: 'https://github.com/joaosalignac',
-                img: 'https://i.imgur.com/r64qfIW.jpeg' 
-            },
-            'julio': {
-                name: 'Julio Cesar',
-                role: 'Estudante',
-                email: 'jcrpfilho2020@gmail.com',
-                linkedin: 'http://www.linkedin.com/in/julio-cesar-filho-a8b25a203',
-                github: 'https://github.com/julioclsar',
-                img: 'https://i.imgur.com/nNxQuFZ.jpeg' 
-            }
-        };
-
-        function openMemberDetail(memberId) {
-            const data = teamData[memberId];
-            if(!data) return;
-
-            const modalContent = document.getElementById('team-modal-content');
-            modalContent.classList.replace('max-w-sm', 'max-w-md');
-
-            document.getElementById('detail-name').innerText = data.name;
-            document.getElementById('detail-role').innerText = data.role;
-            
-            const emailEl = document.getElementById('detail-email');
-            emailEl.href = 'mailto:' + data.email;
-            emailEl.querySelector('span:last-child').innerText = data.email;
-
-            document.getElementById('detail-linkedin').href = data.linkedin;
-            document.getElementById('detail-github').href = data.github;
-            document.getElementById('detail-img').src = data.img;
-
-            const listView = document.getElementById('team-list-view');
-            const detailView = document.getElementById('team-detail-view');
-            
-            listView.classList.add('opacity-0'); 
-            listView.classList.add('hidden'); 
-            
-            listView.classList.remove('flex'); 
-            listView.classList.add('hidden');
-
-            detailView.classList.remove('hidden');
-            detailView.classList.add('flex');
-            
-            setTimeout(() => {
-                detailView.classList.remove('opacity-0');
-            }, 50);
-        }
-
-        function backToTeamList() {
-            const modalContent = document.getElementById('team-modal-content');
-            modalContent.classList.replace('max-w-md', 'max-w-sm');
-
-            const listView = document.getElementById('team-list-view');
-            const detailView = document.getElementById('team-detail-view');
-
-            detailView.classList.add('opacity-0');
-            detailView.classList.remove('flex');
-            detailView.classList.add('hidden');
-
-            listView.classList.remove('hidden');
-            listView.classList.add('flex');
-             
-             setTimeout(() => {
-                listView.classList.remove('opacity-0');
-            }, 50);
-        }
-
-        const w2hData = {
-            'publish': {
-                name: 'Ybyrá Publish',
-                what: 'Desenvolvimento de um sistema para organizar, aprovar, agendar e monitorar publicações do Instagram institucional.',
-                why: 'Atender à necessidade de padronização, histórico organizado e comunicação eficiente.',
-                how: 'Levantamento de requisitos, prototipação, integração com a API Meta, painel de métricas e fluxo de aprovação.',
-                who: 'Julio Cesar Ribeiro e João Victor Salignac, com apoio do TI e Marketing.',
-                when: 'Planejado para desenvolvimento ao longo do semestre letivo.',
-                where: 'Uso interno pelos setores de Marketing, Comunicação e áreas autorizadas.',
-                howmuch: 'Baixo custo, utilizando infraestrutura existente e ferramentas gratuitas.'
-            },
-            'ybot': {
-                name: 'Ybot',
-                what: 'Chatbot para atendimento automatizado, respostas a dúvidas frequentes e direcionamento institucional.',
-                why: 'Reduzir a sobrecarga do atendimento humano e melhorar a comunicação com o público.',
-                how: 'Criação de base de conhecimento, aplicação de processamento de linguagem natural, testes, implantação e monitoramento.',
-                who: 'Discentes responsáveis, com apoio do setor de TI e Comunicação.',
-                when: 'Desenvolvimento contínuo ao longo do semestre.',
-                where: 'Site institucional e demais canais associados.',
-                howmuch: 'Custo reduzido, utilizando ferramentas de IA e hospedagem acessível.'
-            }
-        };
-
-        let currentProject = 'publish'; 
-
-        function render5W2H() {
-            const data = w2hData[currentProject];
-            const pill = document.getElementById('project-pill');
-            const grid = document.getElementById('5w2h-grid');
-            
-            pill.innerText = data.name;
-            
-            grid.classList.remove('matrix-fade');
-            void grid.offsetWidth; 
-            grid.classList.add('matrix-fade');
-
-            grid.innerHTML = `
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/15 transition-colors">
-                    <div class="text-4xl font-bold text-blue-400 mb-4">What</div>
-                    <p class="text-gray-300 text-lg text-justify">${data.what}</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/15 transition-colors">
-                    <div class="text-4xl font-bold text-green-400 mb-4">Why</div>
-                    <p class="text-gray-300 text-lg text-justify">${data.why}</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/15 transition-colors">
-                    <div class="text-4xl font-bold text-yellow-400 mb-4">How</div>
-                    <p class="text-gray-300 text-lg text-justify">${data.how}</p>
-                </div>
-                
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/15 transition-colors">
-                    <div class="text-4xl font-bold text-purple-400 mb-4">Who</div>
-                    <p class="text-gray-300 text-lg text-justify">${data.who}</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/15 transition-colors">
-                    <div class="text-4xl font-bold text-orange-400 mb-4">When</div>
-                    <p class="text-gray-300 text-lg text-justify">${data.when}</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/15 transition-colors">
-                    <div class="text-4xl font-bold text-red-400 mb-4">Where</div>
-                    <p class="text-gray-300 text-lg text-justify">${data.where}</p>
-                </div>
-
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/10 hover:bg-white/15 transition-colors lg:col-span-3 lg:w-1/3 lg:mx-auto">
-                    <div class="text-4xl font-bold text-cyan-400 mb-4">How Much</div>
-                    <p class="text-gray-300 text-lg text-justify">${data.howmuch}</p>
-                </div>
-            `;
-        }
-
-        function switch5W2HProject(direction) {
-            if (currentProject === 'publish') {
-                currentProject = 'ybot';
-            } else {
-                currentProject = 'publish';
-            }
-            render5W2H();
-        }
-
-        function returnToCurrentSection() {
-            let found = false;
-            sections.forEach(sec => {
-                const rect = sec.getBoundingClientRect();
-                if(rect.top <= window.innerHeight/2 && rect.bottom >= window.innerHeight/2) {
-                    const link = document.querySelector(`.nav-item[data-target="${sec.id}"]`);
-                    if(link) {
-                        movePillTo(link);
-                        found = true;
-                    }
+                    setTimeout(() => {
+                        const response = getBotResponse(text);
+                        addMessage(response, 'bot');
+                    }, 600);
                 }
-            });
-            if(!found) {
-                const firstItem = document.querySelector('.nav-item[data-target="intro"]');
-                if(firstItem) movePillTo(firstItem);
             }
-        }
+
+            sendBtn.addEventListener('click', handleSend);
+            inputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSend();
+            });
+        });
     </script>
 </body>
 </html>
