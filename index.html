@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instituto Federal do Amazonas - Com Ybot</title>
-    <!-- Favicon atualizado -->
     <link rel="icon" type="image/png" href="300px-Instituto_Federal_do_Amazonas.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,7 +17,6 @@
         body { overflow-x: hidden; }
         .br-menu.active { display: none; }
 
-        /* Removemos o pointer-events: none dos links para garantir que o clique seja detectado */
         a:not(#ybot-container a):not(#ybot-trigger) {
             cursor: default !important;
         }
@@ -474,7 +472,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. Configurar Links: Impede navegação, mas deixa evento propagar para ser detectado pelo 'fechar chat'
             const allLinks = document.querySelectorAll('a');
             allLinks.forEach(link => {
                 if (!link.closest('#ybot-container') && !link.closest('#ybot-trigger')) {
@@ -482,7 +479,6 @@
                     
                     link.addEventListener('click', function(e) {
                         e.preventDefault(); 
-                        // SEM e.stopPropagation() aqui, para que o clique suba até o document
                     });
                 }
             });
@@ -494,7 +490,6 @@
             const inputField = document.getElementById('ybot-input');
             const messagesArea = document.getElementById('ybot-messages');
 
-            // Abrir/Fechar com o Botão (Com stopPropagation para não ativar o fechar do document imediatamente)
             trigger.addEventListener('click', (e) => {
                 e.stopPropagation(); 
                 container.classList.toggle('active');
@@ -503,18 +498,15 @@
                 }
             });
 
-            // Botão X de fechar
             closeBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 container.classList.remove('active');
             });
 
-            // Cliques DENTRO do chat não fecham
             container.addEventListener('click', (e) => {
                 e.stopPropagation();
             });
 
-            // 2. O SEGREDO: Usar {capture: true} para pegar o clique antes de qualquer script do site
             document.addEventListener('click', function(event) {
                 if (container.classList.contains('active')) {
                     // Verifica se o alvo não é o chat ou o botão
@@ -522,9 +514,8 @@
                         container.classList.remove('active');
                     }
                 }
-            }, { capture: true }); // <--- IMPORTANTE: 'capture: true' garante prioridade
+            }, { capture: true });
 
-            // Chat Logic
             function addMessage(text, sender) {
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('message', sender);
