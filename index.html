@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instituto Federal do Amazonas - Com Ybot</title>
+    <!-- Favicon atualizado conforme solicitado -->
     <link rel="icon" type="image/png" href="300px-Instituto_Federal_do_Amazonas.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -496,27 +497,36 @@
             const inputField = document.getElementById('ybot-input');
             const messagesArea = document.getElementById('ybot-messages');
 
-            trigger.addEventListener('click', () => {
+            // --- Lógica Corrigida para Abrir/Fechar ---
+
+            // Botão flutuante abre ou fecha o chat, e IMPEDE (stopPropagation) que o click passe pro document
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation(); 
                 container.classList.toggle('active');
                 if (container.classList.contains('active')) {
                     inputField.focus();
                 }
             });
 
-            closeBtn.addEventListener('click', () => {
+            // Botão de fechar (X)
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Boa prática também
                 container.classList.remove('active');
             });
 
-            // Fecha o chat ao clicar fora
-            document.addEventListener('click', function(event) {
-                // Se o chat estiver aberto (tem a classe .active)
+            // Cliques DENTRO do chat não devem fechar o chat
+            container.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            // Qualquer clique no Documento (fora dos elementos acima, que usaram stopPropagation)
+            // fechará o chat se ele estiver aberto.
+            document.addEventListener('click', () => {
                 if (container.classList.contains('active')) {
-                    // Verifica se o clique NÃO foi dentro do container e NÃO foi no botão de abrir
-                    if (!container.contains(event.target) && !trigger.contains(event.target)) {
-                        container.classList.remove('active');
-                    }
+                    container.classList.remove('active');
                 }
             });
+            // ------------------------------------------
 
             function addMessage(text, sender) {
                 const msgDiv = document.createElement('div');
